@@ -58,4 +58,37 @@ class ManageReservationsTest extends TestCase
         $this->get($reservation->path() . '/edit')
             ->assertStatus(403);
     }
+
+    /** @test **/
+    public function a_user_can_create_a_reservation()
+    {
+        $user = factory(User::class)->create();
+        $this->actingAs($user);
+
+        $start = $this->faker->dateTimeBetween('-2 days', '+20 days');
+        $attributes = [
+            'title' => $this->faker->title,
+            'description' => $this->faker->text(140),
+            'start_date' => $start->format('Y-m-d'),
+            'end_date' => $this->faker->dateTimeBetween($start, $start->format('Y-m-d').' +4 days')->format('Y-m-d'),
+        ];
+
+        $this->get('/reservations/create')
+            ->assertStatus(200);
+
+        $this->post('/reservations', $attributes)
+            ->assertRedirect('/reservations');
+
+        $this->assertDatabaseHas('reservations', $attributes);
+    }
+
+    /** @test */
+    public function a_user_can_view_all_their_reservations()
+    {
+        $reservation = factory(Reservation::class)->create();
+
+        $this->actingAs($reservation->owner)
+            ->get('/reservations')
+            ->assertSee($reservation->title);
+    }
 }

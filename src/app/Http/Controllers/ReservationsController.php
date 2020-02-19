@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 
 class ReservationsController extends Controller
 {
+    private $validationRules = [
+        'title' => 'required|min:3',
+        'description' => 'required|min:3',
+        'start_date' => 'required',
+        'end_date' => 'required',
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +21,9 @@ class ReservationsController extends Controller
      */
     public function index()
     {
-        //
+        $reservations = auth()->user()->reservations;
+
+        return view('reservations.index', compact('reservations'));
     }
 
     /**
@@ -24,7 +33,7 @@ class ReservationsController extends Controller
      */
     public function create()
     {
-        //
+        return view('reservations.create');
     }
 
     /**
@@ -35,7 +44,11 @@ class ReservationsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $attributes = $request->validate($this->validationRules, $request->all());
+
+        auth()->user()->reservations()->create($attributes);
+
+        return redirect('/reservations');
     }
 
     /**
