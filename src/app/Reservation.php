@@ -12,6 +12,10 @@ class Reservation extends Model
         'start_date',
         'end_date'
     ];
+    
+    protected $hidden = [
+        'owner'
+    ];
 
     public function path()
     {

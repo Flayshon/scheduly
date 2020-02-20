@@ -89,6 +89,51 @@ class ManageReservationsTest extends TestCase
 
         $this->actingAs($reservation->owner)
             ->get('/reservations')
-            ->assertSee($reservation->title);
+            ->assertSee(e($reservation->title));
+    }
+
+    /** @test */
+    public function a_user_can_view_their_reservation()
+    {
+        $reservation = factory(Reservation::class)->create();
+
+        $this->actingAs($reservation->owner)
+            ->get($reservation->path())
+            ->assertSee(e($reservation->title));
+    }
+
+    /** @test */
+    public function a_user_can_update_a_reservation()
+    {
+        $reservation = factory(Reservation::class)->create();
+
+        $newAttributes = [
+            'title' => 'new title',
+            'description' => 'new description',
+            'start_date'=> '2020-03-01',
+            'end_date'=> '2020-03-07',
+        ];
+
+        $this->actingAs($reservation->owner)
+            ->get($reservation->path() . '/edit')
+            ->assertOk();
+
+        $this->actingAs($reservation->owner)
+            ->patch($reservation->path(), $newAttributes)
+            ->assertRedirect('/reservations');
+        
+        $this->assertDatabaseHas('reservations', $newAttributes);
+    }
+
+    /** @test */
+    public function a_user_can_delete_a_reservation()
+    {
+        $reservation = factory(Reservation::class)->create();
+
+        $this->actingAs($reservation->owner)
+            ->delete($reservation->path())
+            ->assertRedirect('/reservations');
+        
+        $this->assertDatabaseMissing('reservations', $reservation->toArray());
     }
 }

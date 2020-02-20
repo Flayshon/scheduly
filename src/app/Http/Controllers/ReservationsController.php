@@ -60,6 +60,8 @@ class ReservationsController extends Controller
     public function show(Reservation $reservation)
     {
         $this->authorize('view', $reservation);
+
+        return view('reservations.show', compact('reservation'));
     }
 
     /**
@@ -71,6 +73,8 @@ class ReservationsController extends Controller
     public function edit(Reservation $reservation)
     {
         $this->authorize('update', $reservation);
+
+        return view('reservations.edit');
     }
 
     /**
@@ -83,8 +87,14 @@ class ReservationsController extends Controller
     public function update(Request $request, Reservation $reservation)
     {
         $this->authorize('update', $reservation);
-    }
 
+        $attributes = $request->validate($this->validationRules, $request->all());
+
+        $reservation->update($attributes);
+        
+        return redirect('/reservations');
+    }
+    
     /**
      * Remove the specified resource from storage.
      *
@@ -93,6 +103,10 @@ class ReservationsController extends Controller
      */
     public function destroy(Reservation $reservation)
     {
-        $this->authorize('update', $reservation);
+        $this->authorize('delete', $reservation);
+        
+        $reservation->delete();
+        
+        return redirect('/reservations');
     }
 }
