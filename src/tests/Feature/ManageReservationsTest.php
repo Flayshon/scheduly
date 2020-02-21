@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+
 use App\Reservation;
 use App\User;
 
@@ -66,11 +67,17 @@ class ManageReservationsTest extends TestCase
         $this->actingAs($user);
 
         $start = $this->faker->dateTimeBetween('-2 days', '+20 days');
+        $end = $this->faker->dateTimeBetween($start, $start->format('Y-m-d') . ' +4 days');
+        $startSlot = $this->faker->dateTimeBetween($start, $end);
+        $endSlot = $this->faker->dateTimeBetween($startSlot, $end);
+
         $attributes = [
             'title' => $this->faker->title,
             'description' => $this->faker->text(140),
             'start_date' => $start->format('Y-m-d'),
-            'end_date' => $this->faker->dateTimeBetween($start, $start->format('Y-m-d').' +4 days')->format('Y-m-d'),
+            'end_date' => $end->format('Y-m-d'),
+            'start_slot' => $startSlot->format('Y-m-d'),
+            'end_slot' => $endSlot->format('Y-m-d'),
         ];
 
         $this->get('/reservations/create')
@@ -110,8 +117,8 @@ class ManageReservationsTest extends TestCase
         $newAttributes = [
             'title' => 'new title',
             'description' => 'new description',
-            'start_date'=> '2020-03-01',
-            'end_date'=> '2020-03-07',
+            'start_date' => '2020-03-01',
+            'end_date' => '2020-03-07',
         ];
 
         $this->actingAs($reservation->owner)
@@ -121,7 +128,7 @@ class ManageReservationsTest extends TestCase
         $this->actingAs($reservation->owner)
             ->patch($reservation->path(), $newAttributes)
             ->assertRedirect('/reservations');
-        
+
         $this->assertDatabaseHas('reservations', $newAttributes);
     }
 
@@ -133,7 +140,7 @@ class ManageReservationsTest extends TestCase
         $this->actingAs($reservation->owner)
             ->delete($reservation->path())
             ->assertRedirect('/reservations');
-        
+
         $this->assertDatabaseMissing('reservations', $reservation->toArray());
     }
 }
