@@ -63,6 +63,8 @@ class ManageReservationsTest extends TestCase
     /** @test **/
     public function a_user_can_create_a_reservation()
     {
+        $this->withoutExceptionHandling();
+        
         $user = factory(User::class)->create();
         $this->actingAs($user);
 
@@ -76,8 +78,8 @@ class ManageReservationsTest extends TestCase
             'description' => $this->faker->text(140),
             'start_date' => $start->format('Y-m-d'),
             'end_date' => $end->format('Y-m-d'),
-            'start_slot' => $startSlot->format('Y-m-d'),
-            'end_slot' => $endSlot->format('Y-m-d'),
+            'start_slot' => $startSlot,
+            'end_slot' => $endSlot,
         ];
 
         $this->get('/reservations/create')
