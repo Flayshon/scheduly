@@ -7,7 +7,17 @@ use Illuminate\Http\Request;
 
 class ReservationsController extends Controller
 {
-    private $validationRules = [
+    private $storeValidationRules = [
+        'title' => 'required|min:3',
+        'description' => 'required|min:3',
+        'start_date' => 'required',
+        'end_date' => 'required',
+        'location_id' => 'required',
+        'start' => 'required',
+        'end' => 'required',
+    ];
+    
+    private $updateValidationRules = [
         'title' => 'required|min:3',
         'description' => 'required|min:3',
         'start_date' => 'required',
@@ -44,9 +54,13 @@ class ReservationsController extends Controller
      */
     public function store(Request $request)
     {
-        $attributes = $request->validate($this->validationRules, $request->all());
+        $attributes = $request->validate($this->storeValidationRules, $request->all());
 
-        auth()->user()->reservations()->create($attributes);
+        $reservation = auth()->user()->reservations()->create($attributes);
+
+        $timeSlotAttributes = ['reservation_id' => $reservation->id] + $request->only(['location_id', 'start', 'end']);
+
+        $reservation->addTimeSlot($timeSlotAttributes);
 
         return redirect('/reservations');
     }
@@ -88,7 +102,7 @@ class ReservationsController extends Controller
     {
         $this->authorize('update', $reservation);
 
-        $attributes = $request->validate($this->validationRules, $request->all());
+        $attributes = $request->validate($this->updateValidationRules, $request->all());
 
         $reservation->update($attributes);
         

@@ -20,6 +20,16 @@ class CreateTimeSlotsTable extends Migration
             $table->dateTime('start');
             $table->dateTime('end');
             $table->timestamps();
+
+            $table->foreign('reservation_id')
+                ->references('id')
+                ->on('reservations')
+                ->onDelete('cascade');
+                
+            $table->foreign('location_id')
+                ->references('id')
+                ->on('locations')
+                ->onDelete('cascade');
         });
     }
 

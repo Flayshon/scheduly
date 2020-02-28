@@ -3,8 +3,11 @@
 namespace Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Reservation;
 use Tests\TestCase;
+
+use App\Reservation;
+use App\TimeSlot;
+use App\Location;
 
 class TimeSlotTest extends TestCase
 {
@@ -13,9 +16,16 @@ class TimeSlotTest extends TestCase
     /** @test */
     public function it_belongs_to_a_reservation()
     {
-        $this->withoutExceptionHandling();
-        $timeSlot = factory(Reservation::class)->create();
-
+        $timeSlot = factory(TimeSlot::class)->create();
+        
         $this->assertInstanceOf(Reservation::class, $timeSlot->reservation);
+    }
+    
+    /** @test */
+    public function it_has_one_location()
+    {
+        $timeSlot = factory(TimeSlot::class)->create();
+        
+        $this->assertInstanceOf(Location::class, $timeSlot->location);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Location;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -62,25 +63,32 @@ class ManageReservationsTest extends TestCase
 
     /** @test **/
     public function a_user_can_create_a_reservation()
-    {
-        $this->withoutExceptionHandling();
-        
+    {   
         $user = factory(User::class)->create();
         $this->actingAs($user);
+
+        $location = factory(Location::class)->create(['user_id' => $user->id]);
 
         $start = $this->faker->dateTimeBetween('-2 days', '+20 days');
         $end = $this->faker->dateTimeBetween($start, $start->format('Y-m-d') . ' +4 days');
         $startSlot = $this->faker->dateTimeBetween($start, $end);
         $endSlot = $this->faker->dateTimeBetween($startSlot, $end);
 
-        $attributes = [
+        $reservationAttributes = [
+            'user_id' => $user->id,
             'title' => $this->faker->title,
             'description' => $this->faker->text(140),
             'start_date' => $start->format('Y-m-d'),
             'end_date' => $end->format('Y-m-d'),
-            'start_slot' => $startSlot,
-            'end_slot' => $endSlot,
         ];
+        
+        $timeSlotAttributes = [
+            'start' => $startSlot,
+            'end' => $endSlot,
+            'location_id' => $location->id,
+        ];
+
+        $attributes = $reservationAttributes + $timeSlotAttributes;
 
         $this->get('/reservations/create')
             ->assertStatus(200);
@@ -88,7 +96,8 @@ class ManageReservationsTest extends TestCase
         $this->post('/reservations', $attributes)
             ->assertRedirect('/reservations');
 
-        $this->assertDatabaseHas('reservations', $attributes);
+        $this->assertDatabaseHas('reservations', $reservationAttributes);
+        $this->assertDatabaseHas('time_slots', $timeSlotAttributes);
     }
 
     /** @test */

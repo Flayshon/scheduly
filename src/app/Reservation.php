@@ -26,4 +26,14 @@ class Reservation extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function timeSlots()
+    {
+        return $this->hasMany(TimeSlot::class);
+    }
+
+    public function addTimeSlot($attributes)
+    {
+        return $this->timeSlots()->create($attributes);
+    }
 }
