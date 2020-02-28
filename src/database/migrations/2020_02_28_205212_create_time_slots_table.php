@@ -25,7 +25,7 @@ class CreateTimeSlotsTable extends Migration
                 ->references('id')
                 ->on('reservations')
                 ->onDelete('cascade');
-                
+
             $table->foreign('location_id')
                 ->references('id')
                 ->on('locations')
