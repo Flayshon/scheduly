@@ -25,7 +25,7 @@ class ReservationTest extends TestCase
     }
 
     /** @test */
-    public function it_belongs_to_an_owner()
+    public function it_belongs_to_a_user()
     {
         $reservation = factory(Reservation::class)->create();
 

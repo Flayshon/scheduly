@@ -19,7 +19,7 @@ class ValidateReservationsTest extends TestCase
             'title',
             'description',
             'start_date',
-            'end_date'
+            'end_date',
         ];
 
         $user = factory(User::class)->create();

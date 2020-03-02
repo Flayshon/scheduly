@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Location;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 use App\Reservation;
+use App\Location;
 use App\User;
 
 class ManageReservationsTest extends TestCase
@@ -63,32 +63,17 @@ class ManageReservationsTest extends TestCase
 
     /** @test **/
     public function a_user_can_create_a_reservation()
-    {   
+    {
         $user = factory(User::class)->create();
         $this->actingAs($user);
 
         $location = factory(Location::class)->create(['user_id' => $user->id]);
 
-        $start = $this->faker->dateTimeBetween('-2 days', '+20 days');
-        $end = $this->faker->dateTimeBetween($start, $start->format('Y-m-d') . ' +4 days');
-        $startSlot = $this->faker->dateTimeBetween($start, $end);
-        $endSlot = $this->faker->dateTimeBetween($startSlot, $startSlot->format('Y-m-d 23:59:59'));
+        $reservationAttributes = $this->generateReservationAttributes($user->id);
+        $timeSlotAttributes = $this->generateTimeSlotAttributes($reservationAttributes['start_date'], $reservationAttributes['end_date'], $location->id, 3);
 
-        $reservationAttributes = [
-            'user_id' => $user->id,
-            'title' => $this->faker->title,
-            'description' => $this->faker->text(140),
-            'start_date' => $start->format('Y-m-d'),
-            'end_date' => $end->format('Y-m-d'),
-        ];
-        
-        $timeSlotAttributes = [
-            'start' => $startSlot->format('Y-m-d H:i'),
-            'end' => $endSlot->format('Y-m-d H:i'),
-            'location_id' => $location->id,
-        ];
-
-        $attributes = $reservationAttributes + $timeSlotAttributes;
+        $attributes = $reservationAttributes;
+        $attributes['time_slots'] = $timeSlotAttributes;
 
         $this->get('/reservations/create')
             ->assertStatus(200);
@@ -97,7 +82,10 @@ class ManageReservationsTest extends TestCase
             ->assertRedirect('/reservations');
 
         $this->assertDatabaseHas('reservations', $reservationAttributes);
-        $this->assertDatabaseHas('time_slots', $timeSlotAttributes);
+
+        foreach ($timeSlotAttributes as $timeSlot) {
+            $this->assertDatabaseHas('time_slots', $timeSlot);
+        }
     }
 
     /** @test */
@@ -153,5 +141,39 @@ class ManageReservationsTest extends TestCase
             ->assertRedirect('/reservations');
 
         $this->assertDatabaseMissing('reservations', $reservation->toArray());
+    }
+
+    private function generateTimeSlotAttributes($startDate, $endDate, $locationId, $amount)
+    {
+        $timeSlots = [];
+
+        for ($i = 0; $i < $amount; $i++) {
+            $startSlot = $this->faker->dateTimeBetween($startDate, $endDate);
+            $endSlot = $this->faker->dateTimeBetween($startSlot, $startSlot->format('Y-m-d 23:59:59'));
+    
+            $timeSlot = [
+                'start' => $startSlot->format('Y-m-d H:i'),
+                'end' => $endSlot->format('Y-m-d H:i'),
+                'location_id' => $locationId,
+            ];
+
+            array_push($timeSlots, $timeSlot);
+        }
+
+        return $timeSlots;
+    }
+
+    private function generateReservationAttributes($userId)
+    {
+        $start = $this->faker->dateTimeBetween('-2 days', '+20 days');
+        $end = $this->faker->dateTimeBetween($start, $start->format('Y-m-d') . ' +4 days');
+
+        return [
+            'user_id' => $userId,
+            'title' => $this->faker->name,
+            'description' => $this->faker->text(140),
+            'start_date' => $start->format('Y-m-d'),
+            'end_date' => $end->format('Y-m-d'),
+        ];
     }
 }

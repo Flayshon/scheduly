@@ -14,6 +14,6 @@ $factory->define(Reservation::class, function (Faker $faker) {
         'description' => $faker->text(140),
         'start_date' => $start->format('Y-m-d'),
         'end_date' => $faker->dateTimeBetween($start, $start->format('Y-m-d').' +4 days')->format('Y-m-d'),
-        'user_id' => factory(User::class)
+        'user_id' => factory(User::class),
     ];
 });
