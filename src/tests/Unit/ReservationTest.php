@@ -45,11 +45,12 @@ class ReservationTest extends TestCase
     {
         $reservation = factory(TimeSlot::class)->create()->reservation;
 
+        $startSlot = $this->faker->dateTimeBetween($reservation->start_date, $reservation->end_date);
         $timeSlot = $reservation->addTimeSlot([
             'reservation_id' => $reservation->id,
             'location_id' => factory(Location::class)->create()->id,
-            'start' => $startSlot = $this->faker->dateTimeBetween($reservation->start_date, $reservation->end_date),
-            'end' => $this->faker->dateTimeBetween($startSlot, $reservation->end_date),
+            'start' => $startSlot->format('Y-m-d H:i'),
+            'end' => $this->faker->dateTimeBetween($startSlot, $startSlot->format('Y-m-d 23:59'))->format('Y-m-d H:i'),
         ]);
 
         $this->assertTrue($reservation->timeSlots->contains($timeSlot));

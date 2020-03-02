@@ -72,7 +72,7 @@ class ManageReservationsTest extends TestCase
         $start = $this->faker->dateTimeBetween('-2 days', '+20 days');
         $end = $this->faker->dateTimeBetween($start, $start->format('Y-m-d') . ' +4 days');
         $startSlot = $this->faker->dateTimeBetween($start, $end);
-        $endSlot = $this->faker->dateTimeBetween($startSlot, $end);
+        $endSlot = $this->faker->dateTimeBetween($startSlot, $startSlot->format('Y-m-d 23:59:59'));
 
         $reservationAttributes = [
             'user_id' => $user->id,
@@ -83,8 +83,8 @@ class ManageReservationsTest extends TestCase
         ];
         
         $timeSlotAttributes = [
-            'start' => $startSlot,
-            'end' => $endSlot,
+            'start' => $startSlot->format('Y-m-d H:i'),
+            'end' => $endSlot->format('Y-m-d H:i'),
             'location_id' => $location->id,
         ];
 
