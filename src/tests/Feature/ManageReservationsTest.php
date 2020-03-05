@@ -95,7 +95,7 @@ class ManageReservationsTest extends TestCase
 
         $this->actingAs($reservation->owner)
             ->get('/reservations')
-            ->assertSee(e($reservation->title));
+            ->assertSee($reservation->title);
     }
 
     /** @test */
@@ -105,7 +105,7 @@ class ManageReservationsTest extends TestCase
 
         $this->actingAs($reservation->owner)
             ->get($reservation->path())
-            ->assertSee(e($reservation->title));
+            ->assertSee($reservation->title);
     }
 
     /** @test */
