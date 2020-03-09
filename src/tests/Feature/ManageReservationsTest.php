@@ -95,7 +95,15 @@ class ManageReservationsTest extends TestCase
 
         $this->actingAs($reservation->owner)
             ->get('/reservations')
-            ->assertSee($reservation->title);
+            ->assertStatus(200)
+            ->assertPropCount('reservations', 1)
+            ->assertPropValue('reservations', function ($reservations) {
+                $this->assertEquals(
+                    ['id', 'user_id', 'title', 'description',
+                    'start_date', 'end_date'],
+                    array_keys($reservations[0])
+                );
+            });
     }
 
     /** @test */

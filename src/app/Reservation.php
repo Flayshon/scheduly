@@ -14,7 +14,9 @@ class Reservation extends Model
     ];
     
     protected $hidden = [
-        'owner'
+        'owner',
+        'created_at',
+        'updated_at'
     ];
 
     public function path()

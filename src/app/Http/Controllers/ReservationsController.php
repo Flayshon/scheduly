@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Reservation;
+use Inertia\Inertia;
 
 class ReservationsController extends Controller
 {
@@ -33,7 +34,9 @@ class ReservationsController extends Controller
     {
         $reservations = auth()->user()->reservations;
 
-        return view('reservations.index', compact('reservations'));
+        return Inertia::render('Reservations/Index', [
+            'reservations' => $reservations,
+        ]);
     }
 
     /**
