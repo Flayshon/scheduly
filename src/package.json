@@ -22,5 +22,12 @@
         "sass-loader": "^8.0.0",
         "vue": "^2.5.17",
         "vue-template-compiler": "^2.6.10"
+    },
+    "dependencies": {
+        "@inertiajs/inertia": "^0.1.7",
+        "@inertiajs/inertia-vue": "^0.1.2",
+        "dayspan-vuetify": "^0.4.0",
+        "moment": "^2.24.0",
+        "vuetify": "1.5.0"
     }
 }

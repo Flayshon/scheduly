@@ -34,6 +34,8 @@ class ReservationsController extends Controller
     {
         $reservations = auth()->user()->reservations;
 
+        //dd($reservations);
+
         return Inertia::render('Reservations/Index', [
             'reservations' => $reservations,
         ]);
