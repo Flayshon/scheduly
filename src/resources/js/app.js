@@ -7,26 +7,13 @@
 require('./bootstrap')
 
 import { InertiaApp } from '@inertiajs/inertia-vue'
-window.Vue = require('vue')
+import Vue from 'vue'
+import Vuetify from 'vuetify'
 
 Vue.use(InertiaApp)
 const app = document.getElementById('app')
 
-import Vuetify from 'vuetify'
-import DaySpanVuetify from 'dayspan-vuetify'
-//import App from './components/App.vue'
-
-import 'vuetify/dist/vuetify.min.css'
-import 'material-design-icons-iconfont/dist/material-design-icons.css'
-import 'dayspan-vuetify/dist/lib/dayspan-vuetify.min.css'
-
-Vue.config.productionTip = false
 Vue.use(Vuetify)
-Vue.use(DaySpanVuetify, {
-    methods: {
-        getDefaultEventColor: () => '#1976d2'
-    }
-});
 
 /**
  * The following block of code may be used to automatically register your
@@ -48,10 +35,11 @@ Vue.use(DaySpanVuetify, {
  */
 
 new Vue({
-    render: h => h(InertiaApp, {
-      props: {
-        initialPage: JSON.parse(app.dataset.page),
-        resolveComponent: name => require(`./Pages/${name}`).default,
-      },
-    }),
-  }).$mount(app)
+  vuetify: new Vuetify(),
+  render: h => h(InertiaApp, {
+    props: {
+      initialPage: JSON.parse(app.dataset.page),
+      resolveComponent: name => require(`./Pages/${name}`).default,
+    },
+  }),
+}).$mount(app)
