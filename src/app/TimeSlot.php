@@ -8,14 +8,14 @@ class TimeSlot extends Model
 {
     protected $fillable = [
         'location_id',
-        'reservation_id',
+        'event_id',
         'start',
         'end',
     ];
 
-    public function reservation()
+    public function event()
     {
-        return $this->belongsTo(Reservation::class);
+        return $this->belongsTo(Event::class);
     }
 
     public function location()

@@ -1,4 +1,4 @@
-name: scheduly-build-workflow
+name: build
 on: push
 jobs:
   test:

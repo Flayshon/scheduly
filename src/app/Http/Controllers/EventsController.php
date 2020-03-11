@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Reservation;
+use App\Event;
+use Inertia\Inertia;
 
-class ReservationsController extends Controller
+class EventsController extends Controller
 {
     private $storeValidationRules = [
         'title' => 'required|min:3',
@@ -31,9 +32,11 @@ class ReservationsController extends Controller
      */
     public function index()
     {
-        $reservations = auth()->user()->reservations;
+        $events = auth()->user()->events;
 
-        return view('reservations.index', compact('reservations'));
+        return Inertia::render('Events/Index', [
+            'events' => $events,
+        ]);
     }
 
     /**
@@ -43,7 +46,7 @@ class ReservationsController extends Controller
      */
     public function create()
     {
-        return view('reservations.create');
+        return view('events.create');
     }
 
     /**
@@ -56,73 +59,73 @@ class ReservationsController extends Controller
     {
         $attributes = $request->validate($this->storeValidationRules, $request->all());
 
-        $reservation = auth()->user()->reservations()->create($attributes);
+        $event = auth()->user()->events()->create($attributes);
 
         foreach ($request->input('time_slots') as $timeSlot) {
-            $timeSlotAttributes = ['reservation_id' => $reservation->id] + $timeSlot;
+            $timeSlotAttributes = ['event_id' => $event->id] + $timeSlot;
 
-            $reservation->addTimeSlot($timeSlotAttributes);
+            $event->addTimeSlot($timeSlotAttributes);
         }
 
-        return redirect('/reservations');
+        return redirect('/events');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Reservation  $reservation
+     * @param  \App\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function show(Reservation $reservation)
+    public function show(Event $event)
     {
-        $this->authorize('view', $reservation);
+        $this->authorize('view', $event);
 
-        return view('reservations.show', compact('reservation'));
+        return view('events.show', compact('event'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Reservation  $reservation
+     * @param  \App\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function edit(Reservation $reservation)
+    public function edit(Event $event)
     {
-        $this->authorize('update', $reservation);
+        $this->authorize('update', $event);
 
-        return view('reservations.edit');
+        return view('events.edit');
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Reservation  $reservation
+     * @param  \App\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Reservation $reservation)
+    public function update(Request $request, Event $event)
     {
-        $this->authorize('update', $reservation);
+        $this->authorize('update', $event);
 
         $attributes = $request->validate($this->updateValidationRules, $request->all());
 
-        $reservation->update($attributes);
+        $event->update($attributes);
 
-        return redirect('/reservations');
+        return redirect('/events');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Reservation  $reservation
+     * @param  \App\Event  $event
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Reservation $reservation)
+    public function destroy(Event $event)
     {
-        $this->authorize('delete', $reservation);
+        $this->authorize('delete', $event);
 
-        $reservation->delete();
+        $event->delete();
 
-        return redirect('/reservations');
+        return redirect('/events');
     }
 }

@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-use App\Reservation;
+use App\Event;
 use App\TimeSlot;
 use App\Location;
 
@@ -14,11 +14,11 @@ class TimeSlotTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function it_belongs_to_a_reservation()
+    public function it_belongs_to_a_event()
     {
         $timeSlot = factory(TimeSlot::class)->create();
         
-        $this->assertInstanceOf(Reservation::class, $timeSlot->reservation);
+        $this->assertInstanceOf(Event::class, $timeSlot->event);
     }
     
     /** @test */
