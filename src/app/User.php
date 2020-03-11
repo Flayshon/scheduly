@@ -37,9 +37,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function reservations()
+    public function events()
     {
-        return $this->hasMany(Reservation::class);
+        return $this->hasMany(Event::class);
     }
 
     public function locations()

@@ -7,52 +7,52 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-use App\Reservation;
+use App\Event;
 use App\Location;
 use App\TimeSlot;
 use App\User;
 
-class ReservationTest extends TestCase
+class EventTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
     /** @test */
     public function it_has_a_path()
     {
-        $reservation = factory(Reservation::class)->create();
+        $event = factory(Event::class)->create();
 
-        $this->assertEquals("/reservations/{$reservation->id}", $reservation->path());
+        $this->assertEquals("/events/{$event->id}", $event->path());
     }
 
     /** @test */
     public function it_belongs_to_a_user()
     {
-        $reservation = factory(Reservation::class)->create();
+        $event = factory(Event::class)->create();
 
-        $this->assertInstanceOf(User::class, $reservation->owner);
+        $this->assertInstanceOf(User::class, $event->owner);
     }
 
     /** @test */
     public function it_has_many_time_slots()
     {
-        $reservation = factory(Reservation::class)->create();
+        $event = factory(Event::class)->create();
 
-        $this->assertInstanceOf(Collection::class, $reservation->timeSlots);
+        $this->assertInstanceOf(Collection::class, $event->timeSlots);
     }
 
     /** @test */
     public function time_slots_can_be_added()
     {
-        $reservation = factory(TimeSlot::class)->create()->reservation;
+        $event = factory(TimeSlot::class)->create()->event;
 
-        $startSlot = $this->faker->dateTimeBetween($reservation->start_date, $reservation->end_date);
-        $timeSlot = $reservation->addTimeSlot([
-            'reservation_id' => $reservation->id,
+        $startSlot = $this->faker->dateTimeBetween($event->start_date, $event->end_date);
+        $timeSlot = $event->addTimeSlot([
+            'event_id' => $event->id,
             'location_id' => factory(Location::class)->create()->id,
             'start' => $startSlot->format('Y-m-d H:i'),
             'end' => $this->faker->dateTimeBetween($startSlot, $startSlot->format('Y-m-d 23:59'))->format('Y-m-d H:i'),
         ]);
 
-        $this->assertTrue($reservation->timeSlots->contains($timeSlot));
+        $this->assertTrue($event->timeSlots->contains($timeSlot));
     }
 }

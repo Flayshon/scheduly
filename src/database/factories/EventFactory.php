@@ -2,11 +2,11 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Reservation;
+use App\Event;
 use App\User;
 use Faker\Generator as Faker;
 
-$factory->define(Reservation::class, function (Faker $faker) {
+$factory->define(Event::class, function (Faker $faker) {
     $start = $faker->dateTimeBetween('-2 days', '+20 days');
 
     return [

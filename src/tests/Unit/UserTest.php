@@ -12,11 +12,11 @@ class UserTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function it_has_reservations()
+    public function it_has_events()
     {
         $user = factory(User::class)->create();
 
-        $this->assertInstanceOf(Collection::class, $user->reservations);
+        $this->assertInstanceOf(Collection::class, $user->events);
     }
 
     /** @test */

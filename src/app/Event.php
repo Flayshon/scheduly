@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Reservation extends Model
+class Event extends Model
 {
     protected $fillable = [
         'title',
@@ -21,7 +21,7 @@ class Reservation extends Model
 
     public function path()
     {
-        return "/reservations/{$this->id}";
+        return "/events/{$this->id}";
     }
 
     public function owner()
