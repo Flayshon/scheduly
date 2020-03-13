@@ -10,6 +10,9 @@ import { InertiaApp } from '@inertiajs/inertia-vue'
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 
+Vue.config.productionTip = false
+
+Vue.mixin({ methods: { route: window.route } })
 Vue.use(InertiaApp)
 const app = document.getElementById('app')
 

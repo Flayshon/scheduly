@@ -2,21 +2,22 @@
   <v-app>
     <v-card width="400" class="mx-auto mt-5">
       <v-card-title>
-        <h1 class="display-1">Sign In</h1>
+        <h1 class="display-1">Scheduly</h1>
       </v-card-title>
       <v-card-text>
         <v-form @submit.prevent="submit">
           <v-text-field
             v-model="form.email"
+            :error-messages="$page.errors.email"
             label="Email"
             type="email"
             autofocus
             autocapitalize="off"
             prepend-icon="mdi-account-circle"
           ></v-text-field>
-          <div v-if="errors.length" class="form-error">{{ errors[0] }}</div>
           <v-text-field
             v-model="form.password"
+            :error-messages="$page.errors.email"
             label="Password"
             type="password"
             prepend-icon="mdi-lock"
@@ -25,7 +26,7 @@
           <v-checkbox v-model="form.remember" label="Remember me"></v-checkbox>
           <v-divider></v-divider>
           <v-card-actions>
-            <v-btn color="success">Register</v-btn>
+            <v-btn :href="this.route('register')" color="success">Register</v-btn>
             <v-spacer></v-spacer>
             <v-btn color="indo" type="submit">Login</v-btn>
           </v-card-actions>
@@ -40,18 +41,11 @@ export default {
   name: "Login",
   metaInfo: { title: "Login" },
 
-  props: {
-    errors: {
-      type: Array,
-      default: () => []
-    }
-  },
-
   data: () => ({
     sending: false,
     form: {
-      email: "flayshon@gmail.com",
-      password: "asdfasdf",
+      email: "",
+      password: "",
       remember: null
     }
   }),
@@ -65,7 +59,7 @@ export default {
           remember: this.form.remember
         })
         .then(() => (this.sending = false));
-      console.log("açlskdfj");
+      console.log("Form submitted");
     }
   }
 };
