@@ -17,7 +17,7 @@
           ></v-text-field>
           <v-text-field
             v-model="form.password"
-            :error-messages="$page.errors.email"
+            :error-messages="$page.errors.password"
             label="Password"
             type="password"
             prepend-icon="mdi-lock"

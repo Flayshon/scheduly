@@ -47,8 +47,11 @@
           ref="calendar"
           v-model="focus"
           color="primary"
-          :events="events"
-          :event-color="getEventColor"
+          event-name="title"
+          event-start="start_date"
+          event-end="end_date"
+          :events="this.events"
+          :event-color="/*getEventColor*/this.color"
           :now="today"
           :type="type"
           @click:event="showEvent"
@@ -104,8 +107,13 @@
 
 <script>
   export default {
+    props: {
+      inertiaEvents: Array
+    },
+
     data: () => ({
-      focus: '',
+      today: new Date().toISOString().substr(0, 10),
+      focus: new Date().toISOString().substr(0, 10),
       type: 'month',
       typeToLabel: {
         month: 'Month',
@@ -113,15 +121,19 @@
         day: 'Day',
         '4day': '4 Days',
       },
+      name: null,
+      description: null,
       start: null,
       end: null,
+      color: "#1976D2",
+      currentlyEditing: null,
       selectedEvent: {},
       selectedElement: null,
       selectedOpen: false,
       events: [],
-      colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-      names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
+      dialog: false,
     }),
+
     computed: {
       title () {
         const { start, end } = this
@@ -151,32 +163,49 @@
         }
         return ''
       },
+
       monthFormatter () {
         return this.$refs.calendar.getFormatter({
           timeZone: 'UTC', month: 'long',
         })
       },
     },
+
     mounted () {
       this.$refs.calendar.checkChange()
+      this.getEvents()
     },
+
     methods: {
+      getEvents(){
+        let events = []
+        this.inertiaEvents.forEach(element => {
+          events.push(element)
+        })
+
+        this.events = events
+      },
       viewDay ({ date }) {
         this.focus = date
         this.type = 'day'
       },
-      getEventColor (event) {
+
+      /*getEventColor (event) {
         return event.color
-      },
+      },*/
+
       setToday () {
         this.focus = this.today
       },
+
       prev () {
         this.$refs.calendar.prev()
       },
+
       next () {
         this.$refs.calendar.next()
       },
+
       showEvent ({ nativeEvent, event }) {
         const open = () => {
           this.selectedEvent = event
@@ -193,45 +222,17 @@
 
         nativeEvent.stopPropagation()
       },
+
       updateRange ({ start, end }) {
-        const events = []
-
-        const min = new Date(`${start.date}T00:00:00`)
-        const max = new Date(`${end.date}T23:59:59`)
-        const days = (max.getTime() - min.getTime()) / 86400000
-        const eventCount = this.rnd(days, days + 20)
-
-        for (let i = 0; i < eventCount; i++) {
-          const allDay = this.rnd(0, 3) === 0
-          const firstTimestamp = this.rnd(min.getTime(), max.getTime())
-          const first = new Date(firstTimestamp - (firstTimestamp % 900000))
-          const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000
-          const second = new Date(first.getTime() + secondTimestamp)
-
-          events.push({
-            name: this.names[this.rnd(0, this.names.length - 1)],
-            start: this.formatDate(first, !allDay),
-            end: this.formatDate(second, !allDay),
-            color: this.colors[this.rnd(0, this.colors.length - 1)],
-          })
-        }
-
         this.start = start
         this.end = end
-        this.events = events
+        //this.events = events
       },
+
       nth (d) {
         return d > 3 && d < 21
           ? 'th'
           : ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'][d % 10]
-      },
-      rnd (a, b) {
-        return Math.floor((b - a + 1) * Math.random()) + a
-      },
-      formatDate (a, withTime) {
-        return withTime
-          ? `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()} ${a.getHours()}:${a.getMinutes()}`
-          : `${a.getFullYear()}-${a.getMonth() + 1}-${a.getDate()}`
       },
     },
   }

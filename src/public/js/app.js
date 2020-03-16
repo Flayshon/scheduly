@@ -2038,10 +2038,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    inertiaEvents: Array
+  },
   data: function data() {
     return {
-      focus: '',
+      today: new Date().toISOString().substr(0, 10),
+      focus: new Date().toISOString().substr(0, 10),
       type: 'month',
       typeToLabel: {
         month: 'Month',
@@ -2049,14 +2056,17 @@ __webpack_require__.r(__webpack_exports__);
         day: 'Day',
         '4day': '4 Days'
       },
+      name: null,
+      description: null,
       start: null,
       end: null,
+      color: "#1976D2",
+      currentlyEditing: null,
       selectedEvent: {},
       selectedElement: null,
       selectedOpen: false,
       events: [],
-      colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'],
-      names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party']
+      dialog: false
     };
   },
   computed: {
@@ -2100,16 +2110,25 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.$refs.calendar.checkChange();
+    this.getEvents();
   },
   methods: {
+    getEvents: function getEvents() {
+      var events = [];
+      this.inertiaEvents.forEach(function (element) {
+        events.push(element);
+      });
+      this.events = events;
+    },
     viewDay: function viewDay(_ref) {
       var date = _ref.date;
       this.focus = date;
       this.type = 'day';
     },
-    getEventColor: function getEventColor(event) {
-      return event.color;
-    },
+
+    /*getEventColor (event) {
+      return event.color
+    },*/
     setToday: function setToday() {
       this.focus = this.today;
     },
@@ -2145,38 +2164,11 @@ __webpack_require__.r(__webpack_exports__);
     updateRange: function updateRange(_ref3) {
       var start = _ref3.start,
           end = _ref3.end;
-      var events = [];
-      var min = new Date("".concat(start.date, "T00:00:00"));
-      var max = new Date("".concat(end.date, "T23:59:59"));
-      var days = (max.getTime() - min.getTime()) / 86400000;
-      var eventCount = this.rnd(days, days + 20);
-
-      for (var i = 0; i < eventCount; i++) {
-        var allDay = this.rnd(0, 3) === 0;
-        var firstTimestamp = this.rnd(min.getTime(), max.getTime());
-        var first = new Date(firstTimestamp - firstTimestamp % 900000);
-        var secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000;
-        var second = new Date(first.getTime() + secondTimestamp);
-        events.push({
-          name: this.names[this.rnd(0, this.names.length - 1)],
-          start: this.formatDate(first, !allDay),
-          end: this.formatDate(second, !allDay),
-          color: this.colors[this.rnd(0, this.colors.length - 1)]
-        });
-      }
-
       this.start = start;
-      this.end = end;
-      this.events = events;
+      this.end = end; //this.events = events
     },
     nth: function nth(d) {
       return d > 3 && d < 21 ? 'th' : ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'][d % 10];
-    },
-    rnd: function rnd(a, b) {
-      return Math.floor((b - a + 1) * Math.random()) + a;
-    },
-    formatDate: function formatDate(a, withTime) {
-      return withTime ? "".concat(a.getFullYear(), "-").concat(a.getMonth() + 1, "-").concat(a.getDate(), " ").concat(a.getHours(), ":").concat(a.getMinutes()) : "".concat(a.getFullYear(), "-").concat(a.getMonth() + 1, "-").concat(a.getDate());
     }
   }
 });
@@ -2368,6 +2360,7 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Components_Calendar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Components/Calendar */ "./resources/js/Components/Calendar.vue");
+//
 //
 //
 //
@@ -38428,8 +38421,11 @@ var render = function() {
                 ref: "calendar",
                 attrs: {
                   color: "primary",
-                  events: _vm.events,
-                  "event-color": _vm.getEventColor,
+                  "event-name": "title",
+                  "event-start": "start_date",
+                  "event-end": "end_date",
+                  events: this.events,
+                  "event-color": /*getEventColor*/ this.color,
                   now: _vm.today,
                   type: _vm.type
                 },
@@ -38620,7 +38616,7 @@ var render = function() {
                   _vm._v(" "),
                   _c("v-text-field", {
                     attrs: {
-                      "error-messages": _vm.$page.errors.email,
+                      "error-messages": _vm.$page.errors.password,
                       label: "Password",
                       type: "password",
                       "prepend-icon": "mdi-lock",
@@ -38852,7 +38848,25 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("v-app", [_c("v-content", [_c("Calendar")], 1)], 1)
+  return _c(
+    "v-app",
+    [
+      _c(
+        "v-content",
+        [
+          _c(
+            "inertia-link",
+            { attrs: { href: this.route("logout"), method: "post" } },
+            [_vm._v("Logout")]
+          ),
+          _vm._v(" "),
+          _c("Calendar", { attrs: { inertiaEvents: _vm.$page.events } })
+        ],
+        1
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -38977,7 +38991,7 @@ function normalizeComponent (
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global, setImmediate) {/*!
- * Vue.js v2.6.11
+ * Vue.js v2.6.10
  * (c) 2014-2019 Evan You
  * Released under the MIT License.
  */
@@ -40943,7 +40957,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
   isUsingMicroTask = true;
 } else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
   // Fallback to setImmediate.
-  // Technically it leverages the (macro) task queue,
+  // Techinically it leverages the (macro) task queue,
   // but it is still a better choice than setTimeout.
   timerFunc = function () {
     setImmediate(flushCallbacks);
@@ -41032,7 +41046,7 @@ var initProxy;
     warn(
       "Property \"" + key + "\" must be accessed with \"$data." + key + "\" because " +
       'properties starting with "$" or "_" are not proxied in the Vue instance to ' +
-      'prevent conflicts with Vue internals. ' +
+      'prevent conflicts with Vue internals' +
       'See: https://vuejs.org/v2/api/#data',
       target
     );
@@ -41892,7 +41906,7 @@ function bindDynamicKeys (baseObj, values) {
     if (typeof key === 'string' && key) {
       baseObj[values[i]] = values[i + 1];
     } else if (key !== '' && key !== null) {
-      // null is a special value for explicitly removing a binding
+      // null is a speical value for explicitly removing a binding
       warn(
         ("Invalid value for dynamic directive argument (expected string or null): " + key),
         this
@@ -42387,12 +42401,6 @@ function _createElement (
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag);
     if (config.isReservedTag(tag)) {
       // platform built-in elements
-      if (isDef(data) && isDef(data.nativeOn)) {
-        warn(
-          ("The .native modifier for v-on is only valid on components but it was used on <" + tag + ">."),
-          context
-        );
-      }
       vnode = new VNode(
         config.parsePlatformTagName(tag), data, children,
         undefined, undefined, context
@@ -42518,7 +42526,7 @@ function renderMixin (Vue) {
     // render self
     var vnode;
     try {
-      // There's no need to maintain a stack because all render fns are called
+      // There's no need to maintain a stack becaues all render fns are called
       // separately from one another. Nested component's render fns are called
       // when parent component is patched.
       currentRenderingInstance = vm;
@@ -44417,7 +44425,7 @@ Object.defineProperty(Vue, 'FunctionalRenderContext', {
   value: FunctionalRenderContext
 });
 
-Vue.version = '2.6.11';
+Vue.version = '2.6.10';
 
 /*  */
 
@@ -45090,7 +45098,7 @@ function createPatchFunction (backend) {
     }
   }
 
-  function removeVnodes (vnodes, startIdx, endIdx) {
+  function removeVnodes (parentElm, vnodes, startIdx, endIdx) {
     for (; startIdx <= endIdx; ++startIdx) {
       var ch = vnodes[startIdx];
       if (isDef(ch)) {
@@ -45201,7 +45209,7 @@ function createPatchFunction (backend) {
       refElm = isUndef(newCh[newEndIdx + 1]) ? null : newCh[newEndIdx + 1].elm;
       addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue);
     } else if (newStartIdx > newEndIdx) {
-      removeVnodes(oldCh, oldStartIdx, oldEndIdx);
+      removeVnodes(parentElm, oldCh, oldStartIdx, oldEndIdx);
     }
   }
 
@@ -45293,7 +45301,7 @@ function createPatchFunction (backend) {
         if (isDef(oldVnode.text)) { nodeOps.setTextContent(elm, ''); }
         addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue);
       } else if (isDef(oldCh)) {
-        removeVnodes(oldCh, 0, oldCh.length - 1);
+        removeVnodes(elm, oldCh, 0, oldCh.length - 1);
       } else if (isDef(oldVnode.text)) {
         nodeOps.setTextContent(elm, '');
       }
@@ -45522,7 +45530,7 @@ function createPatchFunction (backend) {
 
         // destroy old node
         if (isDef(parentElm)) {
-          removeVnodes([oldVnode], 0, 0);
+          removeVnodes(parentElm, [oldVnode], 0, 0);
         } else if (isDef(oldVnode.tag)) {
           invokeDestroyHook(oldVnode);
         }
@@ -48228,7 +48236,7 @@ var startTagOpen = new RegExp(("^<" + qnameCapture));
 var startTagClose = /^\s*(\/?)>/;
 var endTag = new RegExp(("^<\\/" + qnameCapture + "[^>]*>"));
 var doctype = /^<!DOCTYPE [^>]+>/i;
-// #7298: escape - to avoid being passed as HTML comment when inlined in page
+// #7298: escape - to avoid being pased as HTML comment when inlined in page
 var comment = /^<!\--/;
 var conditionalComment = /^<!\[/;
 
@@ -48513,7 +48521,7 @@ function parseHTML (html, options) {
 /*  */
 
 var onRE = /^@|^v-on:/;
-var dirRE = /^v-|^@|^:|^#/;
+var dirRE = /^v-|^@|^:/;
 var forAliasRE = /([\s\S]*?)\s+(?:in|of)\s+([\s\S]*)/;
 var forIteratorRE = /,([^,\}\]]*)(?:,([^,\}\]]*))?$/;
 var stripParensRE = /^\(|\)$/g;
@@ -49137,7 +49145,7 @@ function processSlotContent (el) {
           if (el.parent && !maybeComponent(el.parent)) {
             warn$2(
               "<template v-slot> can only appear at the root level inside " +
-              "the receiving component",
+              "the receiving the component",
               el
             );
           }
@@ -49700,7 +49708,7 @@ function isDirectChildOfTemplateFor (node) {
 
 /*  */
 
-var fnExpRE = /^([\w$_]+|\([^)]*?\))\s*=>|^function(?:\s+[\w$]+)?\s*\(/;
+var fnExpRE = /^([\w$_]+|\([^)]*?\))\s*=>|^function\s*(?:[\w$]+)?\s*\(/;
 var fnInvokeRE = /\([^)]*?\);*$/;
 var simplePathRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['[^']*?']|\["[^"]*?"]|\[\d+]|\[[A-Za-z_$][\w$]*])*$/;
 
@@ -50469,8 +50477,6 @@ function checkNode (node, warn) {
           var range = node.rawAttrsMap[name];
           if (name === 'v-for') {
             checkFor(node, ("v-for=\"" + value + "\""), warn, range);
-          } else if (name === 'v-slot' || name[0] === '#') {
-            checkFunctionParameterExpression(value, (name + "=\"" + value + "\""), warn, range);
           } else if (onRE.test(name)) {
             checkEvent(value, (name + "=\"" + value + "\""), warn, range);
           } else {
@@ -50490,9 +50496,9 @@ function checkNode (node, warn) {
 }
 
 function checkEvent (exp, text, warn, range) {
-  var stripped = exp.replace(stripStringRE, '');
-  var keywordMatch = stripped.match(unaryOperatorsRE);
-  if (keywordMatch && stripped.charAt(keywordMatch.index - 1) !== '$') {
+  var stipped = exp.replace(stripStringRE, '');
+  var keywordMatch = stipped.match(unaryOperatorsRE);
+  if (keywordMatch && stipped.charAt(keywordMatch.index - 1) !== '$') {
     warn(
       "avoid using JavaScript unary operator as property name: " +
       "\"" + (keywordMatch[0]) + "\" in expression " + (text.trim()),
@@ -50544,19 +50550,6 @@ function checkExpression (exp, text, warn, range) {
         range
       );
     }
-  }
-}
-
-function checkFunctionParameterExpression (exp, text, warn, range) {
-  try {
-    new Function(exp, '');
-  } catch (e) {
-    warn(
-      "invalid function parameter expression: " + (e.message) + " in\n\n" +
-      "    " + exp + "\n\n" +
-      "  Raw expression: " + (text.trim()) + "\n",
-      range
-    );
   }
 }
 

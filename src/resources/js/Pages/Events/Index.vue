@@ -1,7 +1,8 @@
 <template>
   <v-app>
     <v-content>
-      <Calendar />
+      <inertia-link :href="this.route('logout')" method="post">Logout</inertia-link>
+      <Calendar :inertiaEvents="$page.events" />
     </v-content>
   </v-app>
 </template>
@@ -14,6 +15,7 @@ export default {
   components: {
     Calendar
   },
+
   data: () => ({
     //
   }),
