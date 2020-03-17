@@ -15,11 +15,17 @@ class CreateTimeSlotsTable extends Migration
     {
         Schema::create('time_slots', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('event_id');
             $table->unsignedBigInteger('location_id');
             $table->dateTime('start');
             $table->dateTime('end');
             $table->timestamps();
+
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('events')
+                ->onDelete('cascade');
 
             $table->foreign('event_id')
                 ->references('id')

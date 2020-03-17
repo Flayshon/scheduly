@@ -32,7 +32,9 @@ class EventsController extends Controller
      */
     public function index()
     {
-        $events = auth()->user()->events;
+        $events = auth()->user()->timeSlots()->with('events')->get();
+
+        //dd($events);
 
         return Inertia::render('Events/Index', [
             'events' => $events
@@ -63,6 +65,9 @@ class EventsController extends Controller
 
         foreach ($request->input('time_slots') as $timeSlot) {
             $timeSlotAttributes = ['event_id' => $event->id] + $timeSlot;
+
+            $timeSlotAttributes['start'] = \Carbon\Carbon::parse($timeSlotAttributes['start'])->format('Y-m-d H:i');
+            $timeSlotAttributes['end'] = \Carbon\Carbon::parse($timeSlotAttributes['end'])->format('Y-m-d H:i');
 
             $event->addTimeSlot($timeSlotAttributes);
         }

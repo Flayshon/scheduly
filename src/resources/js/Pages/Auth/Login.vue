@@ -38,14 +38,14 @@
 
 <script>
 export default {
-  name: "Login",
-  metaInfo: { title: "Login" },
+  name: 'Login',
+  metaInfo: { title: 'Login' },
 
   data: () => ({
     sending: false,
     form: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
       remember: null
     }
   }),
@@ -53,13 +53,13 @@ export default {
   methods: {
     submit() {
       this.$inertia
-        .post("/login", {
+        .post('/login', {
           email: this.form.email,
           password: this.form.password,
           remember: this.form.remember
         })
-        .then(() => (this.sending = false));
-      console.log("Form submitted");
+        .then(() => (this.sending = false))
+      console.log('Form submitted');
     }
   }
 };

@@ -4,11 +4,13 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap')
+//require('./bootstrap')
 
 import { InertiaApp } from '@inertiajs/inertia-vue'
 import Vue from 'vue'
 import Vuetify from 'vuetify'
+
+window.Vue = Vue
 
 Vue.config.productionTip = false
 

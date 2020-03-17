@@ -17,5 +17,6 @@ Auth::routes();
 
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('/events', 'EventsController');
+    Route::resource('/time-slots', 'TimeSlotsController');
 });
 
