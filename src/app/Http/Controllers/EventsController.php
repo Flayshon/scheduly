@@ -21,39 +21,39 @@ class EventsController extends Controller
     private $updateValidationRules = [
         'title' => 'required|min:3',
         'description' => 'required|min:3',
-        'start_date' => 'required',
-        'end_date' => 'required',
+        'start_date' => 'required|date_format:Y-m-d',
+        'end_date' => 'required|date_format:Y-m-d|after_or_equal:start_date',
     ];
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Inertia\Response
      */
     public function index()
     {
         $events = auth()->user()->events;
 
         return Inertia::render('Events/Index', [
-            'events' => $events,
+            'events' => $events
         ]);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Inertia\Response
      */
     public function create()
     {
-        return view('events.create');
+        return Inertia::render('Events/Create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -74,26 +74,28 @@ class EventsController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Event  $event
-     * @return \Illuminate\Http\Response
+     * @return \Inertia\Response
      */
     public function show(Event $event)
     {
         $this->authorize('view', $event);
 
-        return view('events.show', compact('event'));
+        return Inertia::render('Events/Show', [
+            'event' => $event
+        ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Event  $event
-     * @return \Illuminate\Http\Response
+     * @return \Inertia\Response
      */
     public function edit(Event $event)
     {
         $this->authorize('update', $event);
 
-        return view('events.edit');
+        return Inertia::render('Events/Edit');
     }
 
     /**
@@ -101,7 +103,7 @@ class EventsController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Event  $event
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Event $event)
     {
@@ -118,7 +120,7 @@ class EventsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Event  $event
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Event $event)
     {
