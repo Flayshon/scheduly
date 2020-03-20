@@ -11,13 +11,12 @@
 |
 */
 
-Route::get('/', 'EventsController@index');
+Route::get('/', 'Auth\LoginController@showLoginForm');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('/events', 'EventsController');
+    Route::resource('/time-slots', 'TimeSlotsController');
 });
 

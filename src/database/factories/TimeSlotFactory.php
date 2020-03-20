@@ -5,6 +5,7 @@
 use App\Location;
 use App\Event;
 use App\TimeSlot;
+use App\User;
 use Faker\Generator as Faker;
 
 $factory->define(TimeSlot::class, function (Faker $faker) {
@@ -12,6 +13,7 @@ $factory->define(TimeSlot::class, function (Faker $faker) {
     $startSlot = $faker->dateTimeBetween($event->start_date, $event->end_date);
     
     return [
+        'user_id' => factory(User::class),
         'event_id' => $event->id,
         'location_id' => factory(Location::class),
         'start' => $startSlot->format('Y-m-d H:i'),
