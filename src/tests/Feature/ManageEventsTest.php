@@ -8,6 +8,7 @@ use Tests\TestCase;
 
 use App\Event;
 use App\Location;
+use App\TimeSlot;
 use App\User;
 
 class ManageEventsTest extends TestCase
@@ -92,6 +93,7 @@ class ManageEventsTest extends TestCase
     public function a_user_can_view_all_their_events()
     {
         $event = factory(Event::class)->create();
+        $timeSlot = factory(TimeSlot::class)->create(['event_id' => $event->id, 'user_id' => $event->user_id]);
 
         $this->actingAs($event->owner)
             ->get('/events')
@@ -99,8 +101,9 @@ class ManageEventsTest extends TestCase
             ->assertPropCount('events', 1)
             ->assertPropValue('events', function ($events) {
                 $this->assertEquals(
-                    ['id', 'user_id', 'title', 'description',
-                    'start_date', 'end_date'],
+                    ['id', 'event_id', 'slot_start', 'slot_end', 
+                    'location_id', 'event_start', 'event_end', 
+                    'event_title', 'event_description'],
                     array_keys($events[0])
                 );
             });

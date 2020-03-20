@@ -2584,6 +2584,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'App',
@@ -8110,9 +8112,9 @@ var render = function() {
                 ref: "calendar",
                 attrs: {
                   color: "primary",
-                  "event-name": "title",
-                  "event-start": "start",
-                  "event-end": "end",
+                  "event-name": "event_title",
+                  "event-start": "slot_start",
+                  "event-end": "slot_end",
                   events: this.events,
                   "event-color": /*getEventColor*/ this.color,
                   now: _vm.today,
@@ -8644,6 +8646,14 @@ var render = function() {
             "inertia-link",
             { attrs: { href: this.route("logout"), method: "post" } },
             [_vm._v("Logout")]
+          ),
+          _vm._v(" "),
+          _c("v-spacer"),
+          _vm._v(" "),
+          _c(
+            "inertia-link",
+            { attrs: { href: this.route("events.create"), method: "get" } },
+            [_vm._v("Create new event")]
           ),
           _vm._v(" "),
           _c("Calendar", { attrs: { inertiaEvents: _vm.$page.events } })

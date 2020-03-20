@@ -24,7 +24,7 @@ class CreateTimeSlotsTable extends Migration
 
             $table->foreign('user_id')
                 ->references('id')
-                ->on('events')
+                ->on('users')
                 ->onDelete('cascade');
 
             $table->foreign('event_id')

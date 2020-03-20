@@ -7,10 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class TimeSlot extends Model
 {
     protected $fillable = [
-        'location_id',
+        'user_id',
         'event_id',
         'start',
         'end',
+        'location_id',
+    ];
+
+    protected $hidden = [
+        'user',
+        'created_at',
+        'updated_at'
     ];
 
     public function event()

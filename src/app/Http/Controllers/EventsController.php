@@ -32,12 +32,22 @@ class EventsController extends Controller
      */
     public function index()
     {
-        $events = auth()->user()->timeSlots()->with('events')->get();
-
-        //dd($events);
+        $events = auth()->user()->timeSlots()->with('event')->get();
 
         return Inertia::render('Events/Index', [
-            'events' => $events
+            'events' => $events->transform(function ($slot) {
+                return [
+                    'id' => $slot->id,
+                    'event_id' => $slot->event_id,
+                    'slot_start' => $slot->start,
+                    'slot_end' => $slot->end,
+                    'location_id' => $slot->location_id,
+                    'event_start' => $slot->event->start_date,
+                    'event_end' => $slot->event->start_date,
+                    'event_title' => $slot->event->title,
+                    'event_description' => $slot->event->description,
+                ];
+            })
         ]);
     }
 
@@ -65,9 +75,10 @@ class EventsController extends Controller
 
         foreach ($request->input('time_slots') as $timeSlot) {
             $timeSlotAttributes = ['event_id' => $event->id] + $timeSlot;
-
             $timeSlotAttributes['start'] = \Carbon\Carbon::parse($timeSlotAttributes['start'])->format('Y-m-d H:i');
             $timeSlotAttributes['end'] = \Carbon\Carbon::parse($timeSlotAttributes['end'])->format('Y-m-d H:i');
+            
+            $timeSlotAttributes = ['user_id' => auth()->user()->getAuthIdentifier()] + $timeSlotAttributes;
 
             $event->addTimeSlot($timeSlotAttributes);
         }

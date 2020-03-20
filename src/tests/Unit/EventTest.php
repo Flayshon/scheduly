@@ -47,6 +47,7 @@ class EventTest extends TestCase
 
         $startSlot = $this->faker->dateTimeBetween($event->start_date, $event->end_date);
         $timeSlot = $event->addTimeSlot([
+            'user_id' => $event->owner->id,
             'event_id' => $event->id,
             'location_id' => factory(Location::class)->create()->id,
             'start' => $startSlot->format('Y-m-d H:i'),
