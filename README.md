@@ -3,14 +3,14 @@
 
 A Laravel/Vue application for scheduling events and managing tasks related to them.
 
-## Development
+## Development status
 
 ### Back-end
 
-The core **Event** concept is mostly implemented and tested (TDD). Working on **User** management and **Organization** concept next.
+The core **Event** concept is mostly implemented and tested (TDD), only missing [recurrence rules](https://github.com/jakubroztocil/rrule). Working on **User** management and **Organization** concept next.
 
-The response data is being passed to the front-end components using [Inertia.js](https://inertiajs.com/)
+Response data is being passed to the front-end components using [Inertia.js](https://inertiajs.com/)
 
 ### Front-end
 
-The current prototype uses the base implementation of [dayspan-vuetify](https://github.com/ClickerMonkey/dayspan-vuetify), but I'm working on refactoring it to a custom implementation of the [Vuetify Calendar component](https://vuetifyjs.com/en/components/calendars/) since dayspan-vuetify probably won't be updated anymore.
+Successfully migrated the front-end prototype to use [Vuetify 2 Calendar component](https://vuetifyjs.com/en/components/calendars/). Currently working on expanding its functionalities to include a dynamic time slot resize option using v-calendar event listeners ([Lodash](https://lodash.com/) might come in handy to optimize that behavior).
