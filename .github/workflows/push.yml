@@ -7,12 +7,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build the stack
         run: |
-          cp src/.env.example src/.env
-          docker-compose build
-          docker-compose run --rm --user `id -u`:`id -g` composer install
-          docker-compose up -d
-          docker-compose run --rm --user `id -u`:`id -g` artisan migrate
+          cp .env.example .env
+          ./vessel start
+          ./vessel composer install
+          ./vessel artisan migrate
+          ./vessel npm install
+          ./vessel npm run dev
       - name: Run the tests
         run: |
-          docker-compose run --rm --user `id -u`:`id -g` artisan migrate --env=testing
-          docker-compose run --rm --user `id -u`:`id -g` php ./vendor/bin/phpunit
+          ./vessel artisan test
