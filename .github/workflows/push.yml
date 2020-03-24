@@ -1,18 +1,22 @@
 name: build
 on: push
 jobs:
-  test:
+  laravel-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Build the stack
-        run: |
-          cp src/.env.example src/.env
-          docker-compose build
-          docker-compose run --rm --user `id -u`:`id -g` composer install
-          docker-compose up -d
-          docker-compose run --rm --user `id -u`:`id -g` artisan migrate
-      - name: Run the tests
-        run: |
-          docker-compose run --rm --user `id -u`:`id -g` artisan migrate --env=testing
-          docker-compose run --rm --user `id -u`:`id -g` php ./vendor/bin/phpunit
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        php -r "file_exists('.env') || copy('.env.example', '.env');"
+        composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+        php artisan key:generate
+        chmod -R 777 storage bootstrap/cache
+    - name: Create Database
+      run: |
+        mkdir -p database
+        touch database/database.sqlite
+    - name: Execute tests
+      env:
+        DB_CONNECTION: sqlite
+        DB_DATABASE: database/database.sqlite
+      run: vendor/bin/phpunit

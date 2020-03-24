@@ -33000,7 +33000,8 @@ var __assign = undefined && undefined.__assign || function () {
       immediate: true
     },
     pagination: {
-      handler: function handler() {
+      handler: function handler(pagination, old) {
+        if (Object(_util_helpers__WEBPACK_IMPORTED_MODULE_0__["deepEqual"])(pagination, old)) return;
         this.$emit('pagination', this.pagination);
       },
       immediate: true
@@ -40435,13 +40436,17 @@ var baseMixins = Object(_util_mixins__WEBPACK_IMPORTED_MODULE_8__["default"])(_m
         'v-input--is-dirty': this.isDirty,
         'v-input--is-disabled': this.disabled,
         'v-input--is-focused': this.isFocused,
-        'v-input--is-loading': this.loading !== false && this.loading !== undefined,
+        // <v-switch loading>.loading === '' so we can't just cast to boolean
+        'v-input--is-loading': this.loading !== false && this.loading != null,
         'v-input--is-readonly': this.readonly,
         'v-input--dense': this.dense
       }, this.themeClasses);
     },
     computedId: function computedId() {
       return this.id || "input-" + this._uid;
+    },
+    hasDetails: function hasDetails() {
+      return this.messagesToDisplay.length > 0;
     },
     hasHint: function hasHint() {
       return !this.hasMessages && !!this.hint && (this.persistentHint || this.isFocused);
@@ -40485,7 +40490,7 @@ var baseMixins = Object(_util_mixins__WEBPACK_IMPORTED_MODULE_8__["default"])(_m
       });
     },
     showDetails: function showDetails() {
-      return this.hideDetails === false || this.hideDetails === 'auto' && this.messagesToDisplay.length > 0;
+      return this.hideDetails === false || this.hideDetails === 'auto' && this.hasDetails;
     }
   },
   watch: {
@@ -42942,7 +42947,7 @@ var baseMixins = Object(_util_mixins__WEBPACK_IMPORTED_MODULE_12__["default"])(O
       return !this.disableRouteWatcher && !this.stateless && (this.temporary || this.isMobile);
     },
     showOverlay: function showOverlay() {
-      return this.isActive && (this.isMobile || this.temporary);
+      return !this.hideOverlay && this.isActive && (this.isMobile || this.temporary);
     },
     styles: function styles() {
       var translate = this.isBottom ? 'translateY' : 'translateX';
@@ -46122,6 +46127,8 @@ var baseMixins = Object(_util_mixins__WEBPACK_IMPORTED_MODULE_13__["default"])(_
         this.isFocused = true;
         this.$emit('focus');
       }
+
+      this.$emit('click', e);
     },
     onEscDown: function onEscDown(e) {
       e.preventDefault();
@@ -50691,6 +50698,12 @@ var dirtyTypes = ['color', 'file', 'time', 'date', 'datetime-local', 'week', 'mo
 
       return (this.internalValue || '').toString().length;
     },
+    hasCounter: function hasCounter() {
+      return this.counter !== false && this.counter != null;
+    },
+    hasDetails: function hasDetails() {
+      return _VInput__WEBPACK_IMPORTED_MODULE_1__["default"].options.computed.hasDetails.call(this) || this.hasCounter;
+    },
     internalValue: {
       get: function get() {
         return this.lazyValue;
@@ -50855,7 +50868,7 @@ var dirtyTypes = ['color', 'file', 'time', 'date', 'datetime-local', 'week', 'mo
       return this.genSlot('append', 'inner', [this.genIcon('clear', this.clearableCallback, data)]);
     },
     genCounter: function genCounter() {
-      if (this.counter === false || this.counter == null) return null;
+      if (!this.hasCounter) return null;
       var max = this.counter === true ? this.attrs$.maxlength : this.counter;
       return this.$createElement(_VCounter__WEBPACK_IMPORTED_MODULE_2__["default"], {
         props: {
@@ -50935,10 +50948,9 @@ var dirtyTypes = ['color', 'file', 'time', 'date', 'datetime-local', 'week', 'mo
       });
     },
     genMessages: function genMessages() {
-      if (this.hideDetails === true) return null;
+      if (!this.showDetails) return null;
       var messagesNode = _VInput__WEBPACK_IMPORTED_MODULE_1__["default"].options.methods.genMessages.call(this);
       var counterNode = this.genCounter();
-      if (this.hideDetails === 'auto' && !messagesNode && !counterNode) return null;
       return this.$createElement('div', {
         staticClass: 'v-text-field__details'
       }, [messagesNode, counterNode]);
@@ -53152,7 +53164,7 @@ var __values = undefined && undefined.__values || function (o) {
         node.isOpen = oldNode.isOpen;
         this.nodes[key] = !children.length ? node : this.calculateState(node, this.nodes); // Don't forget to rebuild cache
 
-        if (this.nodes[key].isSelected) this.selectedCache.add(key);
+        if (this.nodes[key].isSelected && (this.selectionType === 'independent' || node.children.length === 0)) this.selectedCache.add(key);
         if (this.nodes[key].isActive) this.activeCache.add(key);
         if (this.nodes[key].isOpen) this.openCache.add(key);
         this.updateVnodeState(key);
@@ -55976,7 +55988,7 @@ function () {
 
   Vuetify.install = _install__WEBPACK_IMPORTED_MODULE_0__["install"];
   Vuetify.installed = false;
-  Vuetify.version = "2.2.17";
+  Vuetify.version = "2.2.18";
   return Vuetify;
 }();
 
@@ -56385,7 +56397,7 @@ __webpack_require__.r(__webpack_exports__);
     prev: 'Vorheriges Bild',
     next: 'Nächstes Bild',
     ariaLabel: {
-      delimiter: 'Carousel slide {0} of {1}'
+      delimiter: 'Element {0} von {1}'
     }
   },
   calendar: {
