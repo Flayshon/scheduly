@@ -27,5 +27,6 @@ class TimeSlotTest extends TestCase
         $timeSlot = factory(TimeSlot::class)->create();
         
         $this->assertInstanceOf(Location::class, $timeSlot->location);
+        $this->assertEquals(1, $timeSlot->location->count());
     }
 }

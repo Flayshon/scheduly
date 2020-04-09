@@ -11,8 +11,8 @@ class EventsController extends Controller
     private $storeValidationRules = [
         'title' => 'required|min:3',
         'description' => 'required|min:3',
-        'start_date' => 'required|date_format:Y-m-d',
-        'end_date' => 'required|date_format:Y-m-d|after_or_equal:start_date',
+        'start' => 'required|date_format:Y-m-d',
+        'end' => 'required|date_format:Y-m-d|after_or_equal:start',
         'time_slots.*.start' => 'required|date_format:Y-m-d\TH:i:sP',
         'time_slots.*.end' => 'required|date_format:Y-m-d\TH:i:sP|after_or_equal:time_slots.*.start',
         'time_slots.*.location_id' => 'required|exists:locations,id',
@@ -21,8 +21,8 @@ class EventsController extends Controller
     private $updateValidationRules = [
         'title' => 'required|min:3',
         'description' => 'required|min:3',
-        'start_date' => 'required|date_format:Y-m-d',
-        'end_date' => 'required|date_format:Y-m-d|after_or_equal:start_date',
+        'start' => 'required|date_format:Y-m-d',
+        'end' => 'required|date_format:Y-m-d|after_or_equal:start',
     ];
 
     /**
@@ -42,8 +42,8 @@ class EventsController extends Controller
                     'slot_start' => $slot->start,
                     'slot_end' => $slot->end,
                     'location_id' => $slot->location_id,
-                    'event_start' => $slot->event->start_date,
-                    'event_end' => $slot->event->start_date,
+                    'event_start' => $slot->event->start,
+                    'event_end' => $slot->event->end,
                     'event_title' => $slot->event->title,
                     'event_description' => $slot->event->description,
                 ];

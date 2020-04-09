@@ -71,7 +71,7 @@ class ManageEventsTest extends TestCase
         $location = factory(Location::class)->create(['user_id' => $user->id]);
 
         $eventAttributes = $this->generateEventAttributes($user->id);
-        $timeSlotAttributes = $this->generateTimeSlotAttributes($eventAttributes['start_date'], $eventAttributes['end_date'], $location->id, 3);
+        $timeSlotAttributes = $this->generateTimeSlotAttributes($eventAttributes['start'], $eventAttributes['end'], $location->id, 3);
 
         $attributes = $eventAttributes;
         $attributes['time_slots'] = $timeSlotAttributes;
@@ -127,8 +127,8 @@ class ManageEventsTest extends TestCase
         $newAttributes = [
             'title' => 'new title',
             'description' => 'new description',
-            'start_date' => '2020-03-01',
-            'end_date' => '2020-03-07',
+            'start' => '2020-03-01',
+            'end' => '2020-03-07',
         ];
 
         $this->actingAs($event->owner)
@@ -183,8 +183,8 @@ class ManageEventsTest extends TestCase
             'user_id' => $userId,
             'title' => $this->faker->name,
             'description' => $this->faker->text(140),
-            'start_date' => $start->format('Y-m-d'),
-            'end_date' => $end->format('Y-m-d'),
+            'start' => $start->format('Y-m-d'),
+            'end' => $end->format('Y-m-d'),
         ];
     }
 }

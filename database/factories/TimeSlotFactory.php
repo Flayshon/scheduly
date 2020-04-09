@@ -10,7 +10,7 @@ use Faker\Generator as Faker;
 
 $factory->define(TimeSlot::class, function (Faker $faker) {
     $event = factory(Event::class)->create();
-    $startSlot = $faker->dateTimeBetween($event->start_date, $event->end_date);
+    $startSlot = $faker->dateTimeBetween($event->start, $event->end);
     
     return [
         'user_id' => factory(User::class),

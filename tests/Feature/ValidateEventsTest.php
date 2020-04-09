@@ -18,8 +18,8 @@ class ValidateEventsTest extends TestCase
         $attributes = [
             'title',
             'description',
-            'start_date',
-            'end_date',
+            'start',
+            'end',
         ];
 
         $user = factory(User::class)->create();

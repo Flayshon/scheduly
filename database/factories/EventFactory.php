@@ -12,8 +12,8 @@ $factory->define(Event::class, function (Faker $faker) {
     return [
         'title' => $faker->name,
         'description' => $faker->text(140),
-        'start_date' => $start->format('Y-m-d'),
-        'end_date' => $faker->dateTimeBetween($start, $start->format('Y-m-d').' +4 days')->format('Y-m-d'),
+        'start' => $start->format('Y-m-d'),
+        'end' => $faker->dateTimeBetween($start, $start->format('Y-m-d').' +4 days')->format('Y-m-d'),
         'user_id' => factory(User::class),
     ];
 });

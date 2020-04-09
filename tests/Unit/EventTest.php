@@ -45,7 +45,7 @@ class EventTest extends TestCase
     {
         $event = factory(TimeSlot::class)->create()->event;
 
-        $startSlot = $this->faker->dateTimeBetween($event->start_date, $event->end_date);
+        $startSlot = $this->faker->dateTimeBetween($event->start, $event->end);
         $timeSlot = $event->addTimeSlot([
             'user_id' => $event->owner->id,
             'event_id' => $event->id,
