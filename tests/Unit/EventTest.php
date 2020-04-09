@@ -50,8 +50,8 @@ class EventTest extends TestCase
             'user_id' => $event->owner->id,
             'event_id' => $event->id,
             'location_id' => factory(Location::class)->create()->id,
-            'start' => $startSlot->format('Y-m-d H:i'),
-            'end' => $this->faker->dateTimeBetween($startSlot, $startSlot->format('Y-m-d 23:59'))->format('Y-m-d H:i'),
+            'start' => $startSlot->format('c'),
+            'end' => $this->faker->dateTimeBetween($startSlot, $startSlot->format('Y-m-d 23:59'))->format('c'),
         ]);
 
         $this->assertTrue($event->timeSlots->contains($timeSlot));

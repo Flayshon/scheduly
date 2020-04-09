@@ -1,9 +1,9 @@
 <template>
   <v-form v-model="formValid" @submit.prevent="submit">
-    <v-jsonschema-form
+    <v-jsf
       v-if="schema"
+      v-model="model"
       :schema="schema"
-      :model="dataObject"
       :options="options"
       @error="showError"
       @change="showChange"
@@ -14,20 +14,13 @@
 </template>
 
 <script>
+import VJsf from '@koumoul/vjsf'
+import '@koumoul/vjsf/dist/main.css'
+import '@koumoul/vjsf/dist/third-party.js'
 
-import Draggable from 'vuedraggable'
-import Swatches from 'vue-swatches'
-import 'vue-swatches/dist/vue-swatches.min.css'
-import VJsonschemaForm from '@koumoul/vuetify-jsonschema-form'
-import '@koumoul/vuetify-jsonschema-form/dist/main.css'
-import { Sketch } from 'vue-color'
-
-Vue.component('swatches', Swatches)
-Vue.component('draggable', Draggable)
-Vue.component('color-picker', Sketch)
+Vue.component('VJsf', VJsf)
 
 export default {
-  components: {VJsonschemaForm},
   props: {
     userId: null
   },
@@ -66,38 +59,33 @@ export default {
             "title": "Time Slots",
             "type": "array",
             "items": {
-              "$ref": "#/definitions/time_slot"
+              "type": "object",
+              "required": [
+                "start",
+                "end",
+                "location"
+              ],
+              "properties": {
+                "start":{
+                  "title": "Start time",
+                  "type": "string",
+                  "format": "date-time",
+                },
+                "end":{
+                  "title": "End time",
+                  "type": "string",
+                  "format": "date-time",
+                },
+                "location_id":{
+                  "title": "Location",
+                  "type": "string"
+                }
+              }
             }
           },
         },
-        "definitions": {
-          "time_slot": {
-            "type": "object",
-            "required": [
-              "start",
-              "end",
-              "location"
-            ],
-            "properties": {
-              "start":{
-                "title": "Start time",
-                "type": "string",
-                "format": "date-time",
-              },
-              "end":{
-                "title": "End time",
-                "type": "string",
-                "format": "date-time",
-              },
-              "location_id":{
-                "title": "Location",
-                "type": "string"
-              }
-            }
-          }
-        }
       },
-      dataObject: {
+      model: {
         
       },
       formValid: false,
@@ -111,10 +99,10 @@ export default {
   },
   methods: {
     submit() {
-      this.dataObject.user_id = this.userId
-      console.log(this.dataObject)
+      this.model.user_id = this.userId
+      console.log(this.model)
       this.$inertia
-        .post('/events', this.dataObject)
+        .post('/events', this.model)
         .then(() => (this.sending = false))
     },
 

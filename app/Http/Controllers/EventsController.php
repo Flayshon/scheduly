@@ -13,8 +13,8 @@ class EventsController extends Controller
         'description' => 'required|min:3',
         'start_date' => 'required|date_format:Y-m-d',
         'end_date' => 'required|date_format:Y-m-d|after_or_equal:start_date',
-        'time_slots.*.start' => 'required|date_format:Y-m-d H:i',
-        'time_slots.*.end' => 'required|date_format:Y-m-d H:i|after_or_equal:time_slots.*.start',
+        'time_slots.*.start' => 'required|date_format:Y-m-d\TH:i:sP',
+        'time_slots.*.end' => 'required|date_format:Y-m-d\TH:i:sP|after_or_equal:time_slots.*.start',
         'time_slots.*.location_id' => 'required|exists:locations,id',
     ];
 
@@ -75,9 +75,6 @@ class EventsController extends Controller
 
         foreach ($request->input('time_slots') as $timeSlot) {
             $timeSlotAttributes = ['event_id' => $event->id] + $timeSlot;
-            $timeSlotAttributes['start'] = \Carbon\Carbon::parse($timeSlotAttributes['start'])->format('Y-m-d H:i');
-            $timeSlotAttributes['end'] = \Carbon\Carbon::parse($timeSlotAttributes['end'])->format('Y-m-d H:i');
-            
             $timeSlotAttributes = ['user_id' => auth()->user()->getAuthIdentifier()] + $timeSlotAttributes;
 
             $event->addTimeSlot($timeSlotAttributes);

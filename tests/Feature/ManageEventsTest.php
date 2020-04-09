@@ -163,8 +163,8 @@ class ManageEventsTest extends TestCase
             $endSlot = $this->faker->dateTimeBetween($startSlot, $startSlot->format('Y-m-d 23:59:59'));
     
             $timeSlot = [
-                'start' => $startSlot->format('Y-m-d H:i'),
-                'end' => $endSlot->format('Y-m-d H:i'),
+                'start' => $startSlot->format('c'),
+                'end' => $endSlot->format('c'),
                 'location_id' => $locationId,
             ];
 
