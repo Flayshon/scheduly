@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\TimeSlot;
+use App\Http\Requests\StoreTimeSlot;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\TimeSlot;
+use Illuminate\Support\Facades\DB;
 
 class TimeSlotsController extends Controller
 {
@@ -16,7 +18,6 @@ class TimeSlotsController extends Controller
     public function index()
     {
         $timeSlots = auth()->user()->events->timeSlots;
-        dd($timeSlots);
 
         return Inertia::render('Events/Index', [
             'timeSlots' => $timeSlots
@@ -39,9 +40,13 @@ class TimeSlotsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTimeSlot $request)
     {
-        //
+        $slot = $request->validated();
+
+        auth()->user()->timeSlots()->create($slot);
+
+        return redirect('/events');
     }
 
     /**

@@ -13,7 +13,7 @@ class ValidateEventsTest extends TestCase
     use RefreshDatabase;
     
     /** @test */
-    public function a_event_have_required_attributes()
+    public function an_event_have_required_attributes()
     {
         $attributes = [
             'title',

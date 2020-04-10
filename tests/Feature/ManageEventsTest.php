@@ -10,10 +10,11 @@ use App\Event;
 use App\Location;
 use App\TimeSlot;
 use App\User;
+use Tests\Setup\AttributeFactory;
 
 class ManageEventsTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase, WithFaker, AttributeFactory;
 
     /** @test **/
     public function guest_users_cannot_manage_events()
@@ -71,7 +72,7 @@ class ManageEventsTest extends TestCase
         $location = factory(Location::class)->create(['user_id' => $user->id]);
 
         $eventAttributes = $this->generateEventAttributes($user->id);
-        $timeSlotAttributes = $this->generateTimeSlotAttributes($eventAttributes['start'], $eventAttributes['end'], $location->id, 3);
+        $timeSlotAttributes = $this->generateTimeSlotAttributes($eventAttributes['start'], $eventAttributes['end'], $location->id, null, 3);
 
         $attributes = $eventAttributes;
         $attributes['time_slots'] = $timeSlotAttributes;
@@ -154,37 +155,5 @@ class ManageEventsTest extends TestCase
         $this->assertDatabaseMissing('events', $event->toArray());
     }
 
-    private function generateTimeSlotAttributes($startDate, $endDate, $locationId, $amount)
-    {
-        $timeSlots = [];
-
-        for ($i = 0; $i < $amount; $i++) {
-            $startSlot = $this->faker->dateTimeBetween($startDate, $endDate);
-            $endSlot = $this->faker->dateTimeBetween($startSlot, $startSlot->format('Y-m-d 23:59:59'));
     
-            $timeSlot = [
-                'start' => $startSlot->format('c'),
-                'end' => $endSlot->format('c'),
-                'location_id' => $locationId,
-            ];
-
-            array_push($timeSlots, $timeSlot);
-        }
-
-        return $timeSlots;
-    }
-
-    private function generateEventAttributes($userId)
-    {
-        $start = $this->faker->dateTimeBetween('-2 days', '+20 days');
-        $end = $this->faker->dateTimeBetween($start, $start->format('Y-m-d') . ' +4 days');
-
-        return [
-            'user_id' => $userId,
-            'title' => $this->faker->name,
-            'description' => $this->faker->text(140),
-            'start' => $start->format('Y-m-d'),
-            'end' => $end->format('Y-m-d'),
-        ];
-    }
 }

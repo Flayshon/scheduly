@@ -14,7 +14,7 @@ class EventsController extends Controller
         'start' => 'required|date_format:Y-m-d',
         'end' => 'required|date_format:Y-m-d|after_or_equal:start',
         'time_slots.*.start' => 'required|date_format:Y-m-d\TH:i:sP',
-        'time_slots.*.end' => 'required|date_format:Y-m-d\TH:i:sP|after_or_equal:time_slots.*.start',
+        'time_slots.*.end' => 'required|date_format:Y-m-d\TH:i:sP|after:time_slots.*.start',
         'time_slots.*.location_id' => 'required|exists:locations,id',
     ];
 
