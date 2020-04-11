@@ -4,27 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Event;
+use App\Http\Requests\StoreEvent;
+use App\Http\Requests\UpdateEvent;
 use Inertia\Inertia;
 
 class EventsController extends Controller
 {
-    private $storeValidationRules = [
-        'title' => 'required|min:3',
-        'description' => 'required|min:3',
-        'start' => 'required|date_format:Y-m-d',
-        'end' => 'required|date_format:Y-m-d|after_or_equal:start',
-        'time_slots.*.start' => 'required|date_format:Y-m-d\TH:i:sP',
-        'time_slots.*.end' => 'required|date_format:Y-m-d\TH:i:sP|after:time_slots.*.start',
-        'time_slots.*.location_id' => 'required|exists:locations,id',
-    ];
-
-    private $updateValidationRules = [
-        'title' => 'required|min:3',
-        'description' => 'required|min:3',
-        'start' => 'required|date_format:Y-m-d',
-        'end' => 'required|date_format:Y-m-d|after_or_equal:start',
-    ];
-
     /**
      * Display a listing of the resource.
      *
@@ -64,12 +49,12 @@ class EventsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\StoreEvent $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(StoreEvent $request)
     {
-        $attributes = $request->validate($this->storeValidationRules, $request->all());
+        $attributes = $request->validated();
 
         $event = auth()->user()->events()->create($attributes);
 
@@ -114,15 +99,15 @@ class EventsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\StoreEvent  $request
      * @param  \App\Event  $event
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Event $event)
+    public function update(UpdateEvent $request, Event $event)
     {
         $this->authorize('update', $event);
 
-        $attributes = $request->validate($this->updateValidationRules, $request->all());
+        $attributes = $request->validated();
 
         $event->update($attributes);
 

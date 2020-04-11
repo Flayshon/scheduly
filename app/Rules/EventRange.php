@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use DateTime;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 
@@ -12,7 +13,7 @@ class EventRange implements Rule
      *
      * @return void
      */
-    public function __construct($eventId)
+    public function __construct($eventId = -1)
     {
         $this->eventId = $eventId;
     }
@@ -26,10 +27,23 @@ class EventRange implements Rule
      */
     public function passes($attribute, $value)
     {
+        $slotDate = new DateTime(substr($value, 0, strpos($value, 'T')));
+
+        if ($this->eventId == -1) {
+            $start = new DateTime(request('start'));
+            $end = new DateTime(request('end'));
+
+            if ($start<=$slotDate && $slotDate<=$end) {
+                return true;
+            }
+
+            return false;
+        }
+
         $validRange = DB::table('events')
             ->where('id', '=', $this->eventId)
-            ->whereDate('start', '<=', substr($value, 0, strpos($value, 'T')))
-            ->whereDate('end', '>=', substr($value, 0, strpos($value, 'T')));
+            ->whereDate('start', '<=', $slotDate)
+            ->whereDate('end', '>=', $slotDate);
 
         if ($validRange->exists()) {
             return true;
