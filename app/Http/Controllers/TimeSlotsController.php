@@ -6,7 +6,6 @@ use App\Http\Requests\StoreTimeSlot;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\TimeSlot;
-use Illuminate\Support\Facades\DB;
 
 class TimeSlotsController extends Controller
 {

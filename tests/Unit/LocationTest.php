@@ -18,4 +18,12 @@ class LocationTest extends TestCase
 
         $this->assertInstanceOf(User::class, $location->owner);
     }
+
+    /** @test */
+    public function it_has_a_path()
+    {
+        $location = factory(Location::class)->create();
+
+        $this->assertEquals($location->path(), "/locations/{$location->id}");
+    }
 }
