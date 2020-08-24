@@ -32,8 +32,8 @@ export default {
         "required": [
           "title",
           "description",
-          "start_date",
-          "end_date",
+          "start",
+          "end",
           "time_slots"
         ],
         "properties": {
@@ -45,12 +45,12 @@ export default {
             "title": "Description",
             "type": "string"
           },
-          "start_date": {
+          "start": {
             "title": "Start Date",
             "type": "string",
             "format": "date"
           },
-          "end_date": {
+          "end": {
             "title": "End Date",
             "type": "string",
             "format": "date"
